@@ -49,10 +49,11 @@ jobs:
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          sed -n -e "/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p" CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
-          echo "**Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }}" >> $GITHUB_ENV
-          echo "$EOF" >> $GITHUB_ENV     
+          echo "CHANGELOG<<$EOF" >> "$GITHUB_ENV"
+          sed -n -e "/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p" CHANGELOG.md | head -n -1 | tail -n +2 >> "$GITHUB_ENV"
+          echo "**Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }}" >> "$GITHUB_ENV"
+          echo "$EOF" >> "$GITHUB_ENV"
+          echo "ENV IS $(cat $GITHUB_ENV)"
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v1
