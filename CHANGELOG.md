@@ -8,6 +8,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## [6.0.2] - 2024-05-02
+
 ### Added
 
 - Added EDR token cache to reuse token after contract negotiation. #256
@@ -702,7 +704,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.2...HEAD
+[6.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.1...6.0.2
 [6.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/6.0.0...6.0.1
 [6.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.21...6.0.0
 [5.0.21]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.20...5.0.21
