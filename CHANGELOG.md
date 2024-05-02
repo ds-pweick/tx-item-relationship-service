@@ -13,6 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - abcafdf
 
 ### Changed
+
 - something without formatting
 
 ## [7.0.3] - 2024-05-02
