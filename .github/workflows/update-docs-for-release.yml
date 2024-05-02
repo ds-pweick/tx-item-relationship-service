@@ -59,7 +59,7 @@ jobs:
           fi
         continue-on-error: false
 
-      - name: Update top level changelog, IRS Helm changelog, Helm repository's yaml file and IrsApplication.java
+      - name: Update top level changelog, Helm Chart and its changelog, Helm repository's irs-api yaml file and IrsApplication.java
         id: update-docs
         run: |
           new_irs_version="${{ inputs.irs-version }}"
@@ -93,7 +93,7 @@ jobs:
           top_lvl_changelog_placeholder_line_number=$(cat -n ${{ env.TOP_LEVEL_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           sed -i "$((top_lvl_changelog_placeholder_line_number+1)) s|^|\n## [$new_irs_version] - $date\n|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}
           
-          ### update irs-helm directory's CHANGELOG.md ###
+          ### update Helm Chart directory's CHANGELOG.md ###
           if [[ "$irs_change_present_in_helm_changelog" == "No" ]]; then
             # get line number of first header which is not placeholder
             next_header_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[$semver_pattern\]" | grep -Eo "^[0-9]+")
@@ -114,6 +114,10 @@ jobs:
           sed -i "$((irs_helm_changelog_placeholder_line_number+1)) s|^|\n## [$new_helm_chart_version] - $date\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           
           ### update irs-api.yaml ###
+          irs_openapi_spec_irs_version_line_number=$(cat -n ${{ env.IRS_OPENAPI_SPEC_PATH }} | grep -Eo -m 1 "[0-9]+.+version: $semver_pattern" | grep -Eo "^[0-9]+")
+          sed -i "$irs_openapi_spec_irs_version_line_number s|$semver_pattern_sed|$new_irs_version|" ${{ env.IRS_OPENAPI_SPEC_PATH }}
+          
+          ### update Helm Chart ###
           yq -i eval '.appVersion = "${{ inputs.irs-version }}"' ${{ env.HELM_CHART_PATH }}
           yq -i eval '.version = "${{ inputs.helm-chart-version }}"' ${{ env.HELM_CHART_PATH }}  
           
