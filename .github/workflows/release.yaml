@@ -24,7 +24,7 @@ jobs:
         with:
           # new irs version is equal to tag created in update-docs-for-release workflow
           # therefore make sure this workflow is executed based on updated repo state
-          ref: tags/${{ inputs.new-irs-version }}
+          ref: refs/tags/${{ inputs.new-irs-version }}
 
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.40.5
