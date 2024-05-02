@@ -56,7 +56,6 @@ jobs:
         run: |
           new_irs_version="${{ inputs.irs-version }}"
           new_helm_chart_version="${{ inputs.helm-chart-version }}"
-          irs_change_present_in_helm_changelog="${{ inputs.helm-changelog-irs-added }}"
           date=$(date +"%Y-%m-%d")
           
           semver_pattern="${{ env.SEMVER_PATTERN }}"
