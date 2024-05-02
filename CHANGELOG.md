@@ -8,6 +8,22 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+- Added EDR token cache to reuse token after contract negotiation. #256
+- Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints. #225
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md. #322
+
+### Changed
+
+- Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as an X-API-KEY
+  request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use
+  new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys. #259
+
+### Removed
+
+- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri`` config entries. #259
+
 ## [6.0.1] - 2024-05-02
 
 ## Changed
