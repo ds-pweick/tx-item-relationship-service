@@ -56,7 +56,7 @@ jobs:
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> "$GITHUB_ENV"
-          echo "CHANGELOG BEGINS WITH $(head CHANGELOG.md)"
+          echo "CHANGELOG BEGINS WITH $(head -n 20 CHANGELOG.md)"
           x=$(sed -n -e "/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p" CHANGELOG.md | head -n -1 | tail -n +2)
           echo "$x" >> "$GITHUB_ENV"
           echo "**Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }}" >> "$GITHUB_ENV"
