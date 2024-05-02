@@ -56,6 +56,7 @@ jobs:
         run: |
           new_irs_version="${{ inputs.irs-version }}"
           new_helm_chart_version="${{ inputs.helm-chart-version }}"
+          irs_change_present_in_helm_changelog="${{ inputs.helm-changelog-irs-added }}"
           date=$(date +"%Y-%m-%d")
           
           semver_pattern="${{ env.SEMVER_PATTERN }}"
@@ -104,6 +105,7 @@ jobs:
           fi
           
           # replace placeholder
+          irs_helm_changelog_placeholder_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           sed -i "$((irs_helm_changelog_placeholder_line_number+1)) s|^|\n## [$new_helm_chart_version] - $date\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           
           ### update irs-api.yaml ###
