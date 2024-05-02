@@ -23,17 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services.validation;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.networknt.schema.InputFormat;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaException;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
 import lombok.extern.slf4j.Slf4j;
+import net.jimblackler.jsonschemafriend.GenerationException;
+import net.jimblackler.jsonschemafriend.Schema;
+import net.jimblackler.jsonschemafriend.SchemaStore;
+import net.jimblackler.jsonschemafriend.Validator;
 import org.eclipse.tractusx.irs.data.JsonParseException;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,7 +41,17 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class JsonValidatorService {
-    private final JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
+    private final SchemaStore schemaStore = new SchemaStore();
+    private final JsonUtil parser;
+
+    /**
+     * Creates a new validation service
+     *
+     * @param parser the parser to use for the JSON
+     */
+    public JsonValidatorService(final JsonUtil parser) {
+        this.parser = parser;
+    }
 
     /**
      * Validate the payload against the schema.
@@ -52,13 +61,17 @@ public class JsonValidatorService {
      * @return the validation result, containing the validation errors if applicable
      */
     public ValidationResult validate(final String jsonSchema, final String jsonPayload) throws InvalidSchemaException {
-        log.trace("Trying to validate JSON ({}) with schema ({})", jsonPayload, jsonSchema);
+        log.debug("Trying to validate JSON ({}) with schema ({})", jsonPayload, jsonSchema);
 
-        final JsonSchema schemaFromString = loadSchema(jsonSchema);
+        final Schema schema = loadSchema(jsonSchema);
 
+        final Validator validator = new Validator();
         try {
-            final Set<ValidationMessage> errors = schemaFromString.validate(jsonPayload, InputFormat.JSON);
-            return createValidationResult(errors.stream().map(ValidationMessage::getMessage).toList());
+            final Object payload = parser.fromString(jsonPayload, Object.class);
+
+            final List<String> errors = new ArrayList<>();
+            validator.validate(schema, payload, validationError -> errors.add(validationError.getMessage()));
+            return createValidationResult(errors);
 
         } catch (final IllegalStateException | JsonParseException e) {
             log.warn("Unable to validate JSON payload ({})", jsonPayload, e);
@@ -79,10 +92,10 @@ public class JsonValidatorService {
         }
     }
 
-    private JsonSchema loadSchema(final String jsonSchema) throws InvalidSchemaException {
+    private Schema loadSchema(final String jsonSchema) throws InvalidSchemaException {
         try {
-            return factory.getSchema(jsonSchema);
-        } catch (final JsonSchemaException e) {
+            return schemaStore.loadSchemaJson(jsonSchema);
+        } catch (final GenerationException e) {
             throw new InvalidSchemaException("Cannot load JSON schema for validation", e);
         }
     }

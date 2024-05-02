@@ -11,6 +11,10 @@ on:
         description: 'Previous IRS version'
         required: true
         type: string
+      helm-chart-version:
+        description: 'New Helm Chart version'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -21,6 +25,29 @@ jobs:
         # make sure this workflow is executed based on updated repo state
       - name: Get updated repo state
         run: git pull
+
+      - name: Update Chart.yaml appVersion
+        uses: mikefarah/yq@v4.40.5
+        with:
+          cmd: yq -i eval '.appVersion = "${{ inputs.new-irs-version }}"' charts/item-relationship-service/Chart.yaml
+
+      - name: Update Chart.yaml version
+        uses: mikefarah/yq@v4.40.5
+        with:
+          cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' charts/item-relationship-service/Chart.yaml
+
+      - name: Prepare Helm release
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "chore(release): Prepare release for Helm version ${{ inputs.helm-chart-version }}"
+          branch: chore/prepare-helm-release-${{ inputs.helm-chart-version }}
+          base: main
+          delete-branch: true
+          title: Prepare Helm release for next version
+          body: |
+            This PR prepares the Helm chart release for version ${{ inputs.helm-chart-version }}. 
+            Please check whether the Chart was updated correctly and that the CHANGELOG contains the relevant information
+            for this release. Also, make sure that the values.yaml is correct before merging this PR.
 
       - name: Extract changelog text
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings

@@ -53,13 +53,13 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
 
     private String catenaXId;
-    private Set<ParentItem> parentItems;
-    private Set<String> customers;
+    private Set<Customer> customers;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.parentItems).stream().flatMap(Collection::stream)
-                       .map(parentItem -> parentItem.toRelationship(this.catenaXId))
+        return Optional.ofNullable(this.customers).stream().flatMap(Collection::stream)
+                       .map(customer -> customer.toRelationship(this.catenaXId))
+                       .flatMap(Optional::stream)
                        .toList();
     }
 
@@ -69,16 +69,31 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    /* package */ static class ParentItem {
+    /* package */ static class Customer {
 
-        private String catenaXId;
-        private boolean isOnlyPotentialParent;
-        private Quantity quantity;
         private String businessPartner;
         private ZonedDateTime createdOn;
         private ZonedDateTime lastModifiedOn;
+        private Set<ParentItem> parentItems;
 
-        public Relationship toRelationship(final String catenaXId) {
+        public Optional<Relationship> toRelationship(final String catenaXId) {
+            return parentItems.stream().findFirst().map(parentItem -> parentItem.toRelationship(catenaXId, this.businessPartner));
+        }
+    }
+    /**
+     * ParentData
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    /* package */ static class ParentItem {
+
+        private String catenaXId;
+        private Quantity quantity;
+        private ZonedDateTime createdOn;
+        private ZonedDateTime lastModifiedOn;
+
+        public Relationship toRelationship(final String catenaXId, final String businessPartner) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)

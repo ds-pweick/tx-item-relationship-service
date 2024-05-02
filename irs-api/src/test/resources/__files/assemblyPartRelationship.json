@@ -4,7 +4,10 @@
     {
       "quantity": {
         "quantityNumber": 0.11,
-        "measurementUnit": "unit:kilogram"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -14,7 +17,10 @@
     {
       "quantity": {
         "quantityNumber": 0.1204,
-        "measurementUnit": "unit:kilogram"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -24,7 +30,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -34,7 +43,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -44,7 +56,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -64,7 +79,7 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": null
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -74,7 +89,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -84,7 +102,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -94,7 +115,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
@@ -104,7 +128,10 @@
     {
       "quantity": {
         "quantityNumber": 1,
-        "measurementUnit": "unit:piece"
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
       },
       "lifecycleContext": "AsBuilt",
       "createdOn": "2022-02-03T14:48:54.709Z",
