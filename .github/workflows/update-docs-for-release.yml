@@ -5,6 +5,7 @@ env:
   TOP_LEVEL_CHANGELOG_PATH: 'CHANGELOG.md'
   IRS_OPENAPI_SPEC_PATH: 'docs/src/api/irs-api.yaml'
   IRS_HELM_CHANGELOG_PATH: 'charts/item-relationship-service/CHANGELOG.md'
+  HELM_CHART_PATH: 'charts/item-relationship-service/Chart.yaml'
   SEMVER_PATTERN: '[0-9]+\.[0-9]+\.[0-9]+'
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -113,8 +114,8 @@ jobs:
           sed -i "$((irs_helm_changelog_placeholder_line_number+1)) s|^|\n## [$new_helm_chart_version] - $date\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           
           ### update irs-api.yaml ###
-          irs_openapi_spec_irs_version_line_number=$(cat -n ${{ env.IRS_OPENAPI_SPEC_PATH }} | grep -Eo -m 1 "[0-9]+.+version: $semver_pattern" | grep -Eo "^[0-9]+")
-          sed -i "$irs_openapi_spec_irs_version_line_number s|$semver_pattern_sed|$new_irs_version|" ${{ env.IRS_OPENAPI_SPEC_PATH }}  
+          yq -i eval '.appVersion = "${{ inputs.irs-version }}"' ${{ env.HELM_CHART_PATH }}
+          yq -i eval '.version = "${{ inputs.helm-chart-version }}"' ${{ env.HELM_CHART_PATH }}  
           
           ### update IrsApplication.java ###
           sed -i "s|API_VERSION = \"$semver_pattern_sed\"|API_VERSION = \"$new_irs_version\"|" ${{ env.IRS_APPLICATION_PATH }}
@@ -123,13 +124,14 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: 'chore(docs): Update docs for release ${{ inputs.irs-version }}'
-          branch: chore/update-docs-for-irs-release-${{ inputs.irs-version }}
+          commit-message: 'chore(release): Prepare IRS release ${{ inputs.irs-version }} and Helm release ${{ inputs.helm-chart-version }}'
+          branch: chore/prepare-irs-${{ inputs.irs-version }}-and-helm-${{ inputs.helm-chart-version }}-releases
           base: main
           delete-branch: true
-          title: Updated docs for next release
-          body: This PR prepares the docs for IRS release version ${{ inputs.irs-version }}.
-            Please check whether the docs were updated correctly. Once this PR is merged, the release process will continue automatically.
+          title: Updated docs and Helm chart for releases
+          body: This PR prepares the docs and the Helm Chart for IRS release version ${{ inputs.irs-version }} and Helm release version ${{ inputs.helm-chart-version }}.
+            Before merging this PR please check whether all updates were performed correctly, that the CHANGELOGs contain the relevant information for the releases and that the values.yaml is correct.
+            Once this PR is merged, the release process will continue automatically.
 
       - name: Wait for pull request merge
         run: |
@@ -143,6 +145,7 @@ jobs:
           while [[ "$pull_request_merged" == "False" ]]
           do
             # give some time to merge pull request
+            echo "Waiting for $sleep_interval_length seconds before checking for merge status..."
             sleep "$sleep_interval_length"s
           
             # retrieve pr status using GH API's pull requests endpoint with GH CLI
@@ -181,4 +184,3 @@ jobs:
     with:
       new-irs-version: ${{ inputs.irs-version }}
       previous-irs-version: ${{ needs.update-docs-for-release.outputs.previous-irs-version }}
-      helm-chart-version: ${{ inputs.helm-chart-version }}
