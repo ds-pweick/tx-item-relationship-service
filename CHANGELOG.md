@@ -6,44 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [Unreleased]
-
-## [5.1.0] - 2024-04-30
-
-### Changed
-
-- Removed obsolete entries from acceptedPolicies configuration. #530
-- Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
-- Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
-
-### Fixed
-
-- Update bouncycastle to 1.78 to fix CVE's.
-- Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
-
-
-## [5.0.0] - 2024-04-16
+## [UNRELEASED]
 
 ### Added
 
 - SAMM models can now be added locally #488
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
 
+### Changed
 
 ### Fixed
 
-- Policy store API fixes. #199, #505
-  - Create policy request limited to create exactly one policy, not multiple (reason: error handling).
-  - Create policy request returns policy id of the created policy now.
-  - Harmonized policy store API between #199 and policy structure from #249.
-  - Consistent naming for business partner number parameters.
-  - Corrected default policy handling.
-  - Validation of business partner numbers. #505
-
-- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the
-  exception as failed future now). #405
+- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the exception as failed future now). #405
 - RestClientExceptions are handled correctly in BpdmFacade now. #405
-- Fixed Base64 encoding and decoding for locally provided Semantic Models #488
+
 
 ## [4.9.0] - 2024-04-03
 ### Added
@@ -52,6 +28,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 - IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
 - Support of building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
+
+### Changed
+
 - Renamed item relationship service Helm chart from "irs-helm" to "item-relationship-service". #489
 
 
@@ -630,10 +609,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.0...HEAD
-[5.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...5.1.0
-[5.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.9.0...5.0.0
-[4.9.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...4.9.0
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...HEAD
 [4.8.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.6.0

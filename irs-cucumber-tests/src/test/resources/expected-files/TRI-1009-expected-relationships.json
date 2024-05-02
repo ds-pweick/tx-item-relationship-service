@@ -1,19 +1,19 @@
 {
     "relationships": [
         {
-            "catenaXId": "urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d",
+            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
             "linkedItem": {
                 "quantity": {
-                    "quantityNumber": 20.0,
+                    "quantityNumber": 2.5,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:piece"
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e7777066-e453-4431-beb3-4e99d042f923",
+                "childCatenaXId": "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
                 "hasAlternatives": false
             },
             "aspectType": "SingleLevelUsageAsBuilt",

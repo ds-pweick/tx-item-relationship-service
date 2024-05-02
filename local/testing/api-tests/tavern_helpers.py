@@ -339,7 +339,8 @@ def job_parameter_are_as_requested(response):
     assert parameter.get('lookupBPNs') is True
     assert parameter.get('callbackUrl') == 'https://www.check123.com'
     aspects_list = parameter.get("aspects")
-    assert 'urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned' in aspects_list
+    assert 'SerialPart' in aspects_list
+    assert 'PartAsPlanned' in aspects_list
 
 
 def create_api_key():
