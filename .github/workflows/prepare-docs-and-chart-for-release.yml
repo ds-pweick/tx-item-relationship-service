@@ -81,8 +81,6 @@ jobs:
           sed -i "$((latest_comparison_url_line_number+1)) s|^|[$new_irs_version]: https://github.com/eclipse-tractusx/item-relationship-service/compare/$previous_irs_version...$new_irs_version\n|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}        
           
           # replace placeholder
-          # get line numbers of "Unreleased" placeholder in changelogs to use them with sed
-          top_lvl_changelog_placeholder_line_number=$(cat -n ${{ env.TOP_LEVEL_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           sed -i "$((top_lvl_changelog_placeholder_line_number+1)) s|^|\n## [$new_irs_version] - $date\n|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}
           
           ### update Helm Chart directory's CHANGELOG.md ###
@@ -96,11 +94,10 @@ jobs:
             sed -i "$((first_changed_section_line_number+1)) s|^|- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           # not present, insert before beginning of next header
           else
-            sed -i "$(($top_lvl_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
+            sed -i "$(($irs_helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           fi
           
           # replace placeholder
-          irs_helm_changelog_placeholder_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           sed -i "$((irs_helm_changelog_placeholder_line_number+1)) s|^|\n## [$new_helm_chart_version] - $date\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           
           ### update irs-api.yaml ###
