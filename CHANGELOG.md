@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [UNRELEASED]
 
+### Changed 
+
+- Something
+
 ## [7.0.4] - 2024-05-02
 
 ### Added
