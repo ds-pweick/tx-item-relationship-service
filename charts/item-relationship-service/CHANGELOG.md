@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.0] - 2024-05-07
+
+### Changed
+
+- Update IRS version to 5.1.0
+
 ### Fixed
 
 - Fix for incomplete renaming of Helm chart (see #489)
