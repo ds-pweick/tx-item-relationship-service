@@ -25,7 +25,9 @@ package org.eclipse.tractusx.irs.connector.job;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -36,6 +38,10 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public interface JobStore {
+    Map<String, String> cancellationStatuses = new ConcurrentHashMap<>();
+    String JOB_CANCELLATION_STATUS_DO_NOT_CANCEL = "do_not_cancel";
+    String JOB_CANCELLATION_STATUS_DO_CANCEL = "do_cancel";
+
     /**
      * Retrieve a job by its identifier.
      *
@@ -137,4 +143,17 @@ public interface JobStore {
      * @see MultiTransferJob#getJob()
      */
     List<MultiTransferJob> findAll();
+
+    default String getCancelFlagForJob(String jobId) {
+        synchronized (cancellationStatuses.get(jobId)) {
+            return cancellationStatuses.get(jobId);
+        }
+    }
+
+    default void setCancelFlagForJob(String jobId, String statusValue) {
+        synchronized (cancellationStatuses.get(jobId)) {
+            cancellationStatuses.put(jobId, statusValue);
+        }
+    }
+
 }

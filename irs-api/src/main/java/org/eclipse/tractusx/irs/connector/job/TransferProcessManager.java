@@ -49,6 +49,4 @@ public interface TransferProcessManager<T extends DataRequest, P extends Transfe
      */
     TransferInitiateResponse initiateRequest(T dataRequest, Consumer<String> transferProcessStarted,
             Consumer<P> transferProcessCompleted, JobParameter jobData);
-
-    void cancelRequest(String processId);
 }

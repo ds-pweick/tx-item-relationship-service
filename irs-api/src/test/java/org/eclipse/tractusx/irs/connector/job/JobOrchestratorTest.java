@@ -260,41 +260,6 @@ class JobOrchestratorTest {
     }
 
     @Test
-    void cancelJob_WhenCancelling_JumpsOverAnyImpossibleOrFailedIfConditional() {
-        String firstTransferProcess = UUID.randomUUID().toString();
-        String secondTransferProcess = UUID.randomUUID().toString();
-        final Collection<String> transferProcesses = new HashSet<>();
-        transferProcesses.add(firstTransferProcess);
-        transferProcesses.add(secondTransferProcess);
-
-        doNothing().when(processManager).cancelRequest(firstTransferProcess);
-        doNothing().when(processManager).cancelRequest(secondTransferProcess);
-
-        sut.cancelJob(generate.job().toBuilder().transferProcessIds(transferProcesses).build());
-
-        verify(meterRegistryService).incrementJobCancelled();
-    }
-
-    @Test
-    void cancelJob_WhenCancelling_EntersAnyImpossibleOrFailedIfConditional() {
-        String firstTransferProcess = UUID.randomUUID().toString();
-        String secondTransferProcess = UUID.randomUUID().toString();
-        final Collection<String> transferProcesses = new HashSet<>();
-        transferProcesses.add(firstTransferProcess);
-        transferProcesses.add(secondTransferProcess);
-
-        doThrow(new JobException(
-                TransferProcessManager.CANCELLATION_IMPOSSIBLE_FUTURE_NOT_FOUND.formatted(firstTransferProcess),
-                firstTransferProcess)).when(processManager).cancelRequest(firstTransferProcess);
-        doThrow(new JobException(TransferProcessManager.CANCELLATION_FAILED.formatted(secondTransferProcess),
-                secondTransferProcess)).when(processManager).cancelRequest(secondTransferProcess);
-
-        sut.cancelJob(generate.job().toBuilder().transferProcessIds(transferProcesses).build());
-
-        verify(meterRegistryService).incrementException();
-    }
-
-    @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_WithoutNextTransfer() {
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());

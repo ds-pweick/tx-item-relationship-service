@@ -219,12 +219,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String idAsString = String.valueOf(jobId);
 
         final Optional<MultiTransferJob> cancelled = this.jobStore.cancelJob(idAsString);
-        cancelled.ifPresent(cancelledJob -> {
-            orchestrator.cancelJob(cancelledJob);
-            applicationEventPublisher.publishEvent(new JobProcessingFinishedEvent(cancelledJob.getJobIdString(),
-                    cancelledJob.getJob().getState().name(), cancelledJob.getJobParameter().getCallbackUrl(),
-                    cancelledJob.getBatchId()));
-        });
+        cancelled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
+                new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
+                        cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
 
         return cancelled.orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId)).getJob();

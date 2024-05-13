@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -64,18 +65,28 @@ public abstract class BaseJobStore implements JobStore {
 
     protected abstract Optional<MultiTransferJob> remove(String jobId);
 
+    protected void checkJobCancelled(String jobId) throws JobException {
+        if (Objects.equals(getCancelFlagForJob(jobId), JOB_CANCELLATION_STATUS_DO_CANCEL)) {
+            throw new JobException("Job cancelled by user");
+        }
+    }
+
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
-        return readLock(() -> get(jobId));
+        try {
+            checkJobCancelled(jobId);
+            return readLock(() -> get(jobId));
+        } catch (JobException e) {
+            log.info("Not executing BaseJobStore.find due to interruption");
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
             final ZonedDateTime dateTime) {
-        return readLock(() -> getAll().stream()
-                                      .filter(hasState(jobState))
-                                      .filter(isCompletionDateBefore(dateTime))
-                                      .toList());
+        return readLock(
+                () -> getAll().stream().filter(hasState(jobState)).filter(isCompletionDateBefore(dateTime)).toList());
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
@@ -98,14 +109,24 @@ public abstract class BaseJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
+
             log.info("Adding new job into jobstore: {}", newJob);
+
+            cancellationStatuses.put(job.getJobIdString(), JOB_CANCELLATION_STATUS_DO_NOT_CANCEL);
             put(job.getJobIdString(), newJob);
+
             return null;
         });
     }
 
     @Override
     public void addTransferProcess(final String jobId, final String processId) {
+        try {
+            checkJobCancelled(jobId);
+        } catch (JobException e) {
+            log.info("Not executing BaseJobStore.addTransferProcess due to interruption");
+            return;
+        }
         log.info("Adding transfer process {} to job {}", processId, jobId);
         modifyJob(jobId, job -> job.toBuilder().transferProcessId(processId).transitionInProgress().build());
     }
@@ -117,6 +138,13 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public void completeTransferProcess(final String jobId, final TransferProcess process) {
+        try {
+            checkJobCancelled(jobId);
+        } catch (JobException e) {
+            log.info("Not executing BaseJobStore.completeTransferProcess due to interruption");
+            return;
+        }
+
         log.info("Completing transfer process {} for job {}", process.getId(), jobId);
         modifyJob(jobId, job -> {
             final var remainingTransfers = job.getTransferProcessIds()
@@ -139,6 +167,13 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
+        try {
+            checkJobCancelled(jobId);
+        } catch (JobException e) {
+            log.info("Not executing BaseJobStore.completeJob due to interruption");
+            return;
+        }
+
         log.info("Completing job {}", jobId);
         modifyJob(jobId, job -> {
             final JobState jobState = job.getJob().getState();
@@ -169,11 +204,18 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public Optional<MultiTransferJob> deleteJob(final String jobId) {
+        try {
+            checkJobCancelled(jobId);
+        } catch (JobException e) {
+            log.info("Not executing BaseJobStore.deleteJob due to interruption");
+            return Optional.empty();
+        }
         return writeLock(() -> remove(jobId));
     }
 
     @Override
     public Optional<MultiTransferJob> cancelJob(final String jobId) {
+        setCancelFlagForJob(jobId, JOB_CANCELLATION_STATUS_DO_CANCEL);
         modifyJob(jobId, job -> job.toBuilder().transitionCancel().build());
 
         return this.get(jobId);
@@ -220,8 +262,7 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            log.info("{} returning from writeLock due to interrupt", Thread.currentThread().getName().toUpperCase());
-            return null;
+            throw new JobException("Job Interrupted", e);
         }
     }
 }

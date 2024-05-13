@@ -149,52 +149,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return JobInitiateResponse.builder().jobId(multiJob.getJobIdString()).status(ResponseStatus.OK).build();
     }
 
-    public void cancelJob(final MultiTransferJob job) {
-        final Collection<String> transferProcessIds = job.getTransferProcessIds();
-
-        final ArrayList<String> futureNotFoundImpossibleCancellations = new ArrayList<>();
-        final ArrayList<String> failedCancellations = new ArrayList<>();
-
-        transferProcessIds.forEach(transferProcessId -> {
-            try {
-                processManager.cancelRequest(transferProcessId);
-            } catch (JobException e) {
-                if (e.getMessage()
-                     .equals(TransferProcessManager.CANCELLATION_IMPOSSIBLE_FUTURE_NOT_FOUND.formatted(
-                             transferProcessId))) {
-                    futureNotFoundImpossibleCancellations.add(transferProcessId);
-                } else if (e.getMessage()
-                            .equals(TransferProcessManager.CANCELLATION_FAILED.formatted(transferProcessId))) {
-                    failedCancellations.add(transferProcessId);
-                }
-            }
-        });
-
-        boolean anyImpossibleOrFailed = !(futureNotFoundImpossibleCancellations.isEmpty()
-                && failedCancellations.isEmpty());
-
-        if (anyImpossibleOrFailed) {
-            meterService.incrementException();
-            String message = "";
-
-            if (!futureNotFoundImpossibleCancellations.isEmpty()) {
-                message += "Cancellation impossible because no Future(s) were found for PID(s) " + String.join(", ",
-                        futureNotFoundImpossibleCancellations);
-            }
-            if (!failedCancellations.isEmpty()) {
-                if (!message.isBlank()) {
-                    message += " and ";
-                }
-                message += "Cancellation failed for PID(s) " + String.join(", ", failedCancellations);
-            }
-
-            markJobInError(job, new JobException(message), "Error cancelling job");
-            return;
-        }
-
-        meterService.incrementJobCancelled();
-    }
-
     /**
      * Callback invoked when a transfer has completed.
      *
@@ -202,6 +156,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     /* package */ void transferProcessCompleted(final P process) {
         final var jobEntry = jobStore.findByProcessId(process.getId());
+
         if (jobEntry.isEmpty()) {
             log.error("Job not found for transfer {}", process.getId());
             return;
@@ -223,6 +178,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
 
         try {
+            if (jobStore.getCancelFlagForJob(job.getJobIdString()).equals(jobStore.JOB_CANCELLATION_STATUS_DO_CANCEL)) {
+                log.info("Not executing JobOrchestrator.startTransfers due to interruption");
+                return;
+            }
             final long transfersStarted = startTransfers(job, requests);
             log.info("Started {} new transfers", transfersStarted);
         } catch (JobException e) {
