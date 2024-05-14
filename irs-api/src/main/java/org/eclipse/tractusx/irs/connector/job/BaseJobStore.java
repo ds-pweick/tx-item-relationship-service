@@ -73,13 +73,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
-        try {
-            checkJobCancelled(jobId);
-            return readLock(() -> get(jobId));
-        } catch (JobException e) {
-            log.info("Not executing BaseJobStore.find due to interruption");
-            return Optional.empty();
-        }
+        return readLock(() -> get(jobId));
     }
 
     @Override
@@ -138,13 +132,6 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public void completeTransferProcess(final String jobId, final TransferProcess process) {
-        try {
-            checkJobCancelled(jobId);
-        } catch (JobException e) {
-            log.info("Not executing BaseJobStore.completeTransferProcess due to interruption");
-            return;
-        }
-
         log.info("Completing transfer process {} for job {}", process.getId(), jobId);
         modifyJob(jobId, job -> {
             final var remainingTransfers = job.getTransferProcessIds()
@@ -167,13 +154,6 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
-        try {
-            checkJobCancelled(jobId);
-        } catch (JobException e) {
-            log.info("Not executing BaseJobStore.completeJob due to interruption");
-            return;
-        }
-
         log.info("Completing job {}", jobId);
         modifyJob(jobId, job -> {
             final JobState jobState = job.getJob().getState();
@@ -204,12 +184,6 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public Optional<MultiTransferJob> deleteJob(final String jobId) {
-        try {
-            checkJobCancelled(jobId);
-        } catch (JobException e) {
-            log.info("Not executing BaseJobStore.deleteJob due to interruption");
-            return Optional.empty();
-        }
         return writeLock(() -> remove(jobId));
     }
 

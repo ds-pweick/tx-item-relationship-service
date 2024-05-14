@@ -71,11 +71,7 @@ public class PersistentJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
         try {
-            checkJobCancelled(jobId);
-            return blobStore.getBlob(toBlobId(jobId)).flatMap(this::toJob);
-        } catch (JobException e) {
-            log.info("Not executing PersistentJobStore.get due to interruption");
-            return Optional.empty();
+           return blobStore.getBlob(toBlobId(jobId)).flatMap(this::toJob);
         } catch (BlobPersistenceException e) {
             log.error("Error while trying to get job from blobstore", e);
             return Optional.empty();
@@ -97,13 +93,10 @@ public class PersistentJobStore extends BaseJobStore {
     protected void put(final String jobId, final MultiTransferJob job) {
         final byte[] blob = toBlob(job);
         try {
-            checkJobCancelled(jobId);
             if (!isLastStateSameAsCurrentState(jobId, job.getJob().getState())) {
                 meterService.recordJobStateMetric(job.getJob().getState());
             }
             blobStore.putBlob(toBlobId(jobId), blob);
-        } catch (JobException e) {
-            log.info("Not executing PersistentJobStore.put due to interruption");
         } catch (BlobPersistenceException e) {
             log.error("Cannot create job in BlobStore", e);
         }
@@ -147,14 +140,8 @@ public class PersistentJobStore extends BaseJobStore {
     }
 
     private boolean isLastStateSameAsCurrentState(final String jobId, final JobState state) {
-        try {
-            checkJobCancelled(jobId);
-            final Optional<MultiTransferJob> optJob = get(jobId);
-            return optJob.isPresent() && optJob.get().getJob().getState().equals(state);
-        } catch (JobException e) {
-            log.info("Not executing PersistentJobStore.isLastStateSameAsCurrentState due to interruption");
-            return false;
-        }
+        final Optional<MultiTransferJob> optJob = get(jobId);
+        return optJob.isPresent() && optJob.get().getJob().getState().equals(state);
     }
 
 }
