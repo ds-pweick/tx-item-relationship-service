@@ -118,7 +118,7 @@ public abstract class BaseJobStore implements JobStore {
         try {
             checkJobCancelled(jobId);
         } catch (JobException e) {
-            log.info("Not executing BaseJobStore.addTransferProcess due to interruption");
+            log.info("Not executing BaseJobStore.addTransferProcess due to job cancellation");
             return;
         }
         log.info("Adding transfer process {} to job {}", processId, jobId);

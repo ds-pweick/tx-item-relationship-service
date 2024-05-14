@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.connector.job;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public interface JobStore {
-    Map<String, String> cancellationStatuses = new ConcurrentHashMap<>();
+    Map<String, String> cancellationStatuses = new HashMap<>();
     String JOB_CANCELLATION_STATUS_DO_NOT_CANCEL = "do_not_cancel";
     String JOB_CANCELLATION_STATUS_DO_CANCEL = "do_cancel";
 

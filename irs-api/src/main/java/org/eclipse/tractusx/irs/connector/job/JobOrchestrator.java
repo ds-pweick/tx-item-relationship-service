@@ -30,6 +30,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -178,8 +179,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
 
         try {
-            if (jobStore.getCancelFlagForJob(job.getJobIdString()).equals(jobStore.JOB_CANCELLATION_STATUS_DO_CANCEL)) {
-                log.info("Not executing JobOrchestrator.startTransfers due to interruption");
+            if (Objects.equals(jobStore.getCancelFlagForJob(job.getJobIdString()),jobStore.JOB_CANCELLATION_STATUS_DO_CANCEL)) {
+                log.info("Not executing JobOrchestrator.startTransfers due to job cancellation");
                 return;
             }
             final long transfersStarted = startTransfers(job, requests);
@@ -278,8 +279,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                 transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
                 this::transferProcessCompleted, jobData);
 
-        if (response.getStatus() != ResponseStatus.OK
-                && response.getStatus() != ResponseStatus.NOT_STARTED_JOB_CANCELLED) {
+        if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());
         }
 

@@ -29,6 +29,5 @@ package org.eclipse.tractusx.irs.connector.job;
 public enum ResponseStatus {
     OK,
     ERROR_RETRY,
-    FATAL_ERROR,
-    NOT_STARTED_JOB_CANCELLED
+    FATAL_ERROR
 }

@@ -35,9 +35,6 @@ import org.eclipse.tractusx.irs.component.JobParameter;
  */
 public interface TransferProcessManager<T extends DataRequest, P extends TransferProcess> {
 
-    String CANCELLATION_IMPOSSIBLE_FUTURE_NOT_FOUND = "Cancellation impossible for transfer process %s: Future not found";
-    String CANCELLATION_FAILED = "Cancellation failed for transfer process %s";
-
     /**
      * Starts a data request asynchronously.
      *

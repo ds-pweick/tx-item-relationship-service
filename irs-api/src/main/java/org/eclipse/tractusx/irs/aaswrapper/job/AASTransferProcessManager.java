@@ -67,13 +67,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
             final JobParameter jobData) {
         final String processId = UUID.randomUUID().toString();
-        if (Thread.currentThread().isInterrupted()) {
-            log.info("{} returning from initiateRequest due to interrupt, didn't add new transfer",
-                    Thread.currentThread().getName().toUpperCase());
-
-            return new TransferInitiateResponse(processId, ResponseStatus.NOT_STARTED_JOB_CANCELLED);
-        }
-
+        
         preExecutionHandler.accept(processId);
 
         executor.execute(getRunnable(dataRequest, completionCallback, processId, jobData));

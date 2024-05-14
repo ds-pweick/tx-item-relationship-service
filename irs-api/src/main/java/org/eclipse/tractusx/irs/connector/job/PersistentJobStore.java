@@ -71,7 +71,7 @@ public class PersistentJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
         try {
-           return blobStore.getBlob(toBlobId(jobId)).flatMap(this::toJob);
+            return blobStore.getBlob(toBlobId(jobId)).flatMap(this::toJob);
         } catch (BlobPersistenceException e) {
             log.error("Error while trying to get job from blobstore", e);
             return Optional.empty();

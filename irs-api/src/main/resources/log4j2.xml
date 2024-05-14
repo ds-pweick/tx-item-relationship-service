@@ -25,6 +25,8 @@
         <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn" />
         <Logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
         <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" />
+        <!-- This can be used to detect the origin of possible memory leaks during job cancellation -->
+        <!-- This is because JobStore uses MinIO, which in turn uses OkHttp by default -->
         <Logger name="okhttp3.OkHttpClient" level="trace" />
     </Loggers>
 

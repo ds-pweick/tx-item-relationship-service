@@ -30,8 +30,6 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -41,10 +39,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -178,9 +173,7 @@ class JobOrchestratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ResponseStatus.class, names = { "OK",
-                                                        "NOT_STARTED_JOB_CANCELLED"
-    }, mode = EXCLUDE)
+    @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void startJob_WhenTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(handler.initiate(any())).thenReturn(Stream.of(dataRequest, dataRequest2));
@@ -355,9 +348,7 @@ class JobOrchestratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ResponseStatus.class, names = { "OK",
-                                                        "NOT_STARTED_JOB_CANCELLED"
-    }, mode = EXCLUDE)
+    @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(
