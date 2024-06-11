@@ -5,6 +5,7 @@
 
     <groupId>org.eclipse.tractusx.irs</groupId>
     <artifactId>item-relationship-service-root</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>Item Relationship Service</name>
@@ -61,7 +62,6 @@
     </modules>
 
     <properties>
-        <revision>0.0.2-SNAPSHOT</revision>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -126,8 +126,6 @@
         <commons-compress.version>1.26.1</commons-compress.version>
         <commons-collections4.version>4.4</commons-collections4.version>
     </properties>
-
-    <version>${revision}</version>
 
     <dependencyManagement>
         <dependencies>
