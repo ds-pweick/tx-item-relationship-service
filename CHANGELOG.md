@@ -8,8 +8,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-## [5.1.6] - 2024-06-26
-
 ### Fixed
 
 - something
