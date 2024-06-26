@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.8] - 2024-06-26
+
+### Changed
+
+- Update IRS version to 5.1.8
+
 ## [7.1.7] - 2024-06-26
 
 ### Changed
