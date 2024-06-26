@@ -20,7 +20,7 @@ on:
 
 env:
   IRS_APPLICATION_PATH: 'irs-api/src/main/java/org/eclipse/tractusx/irs/IrsApplication.java'
-  CHANGELOG_PATH: 'CHANGELOG.md'
+  PATH_TO_CHANGELOG: 'CHANGELOG.md'
   OPENAPI_SPEC_PATH: 'docs/src/api/irs-api.yaml'
   HELM_CHART_PATH: 'charts/item-relationship-service'
   SEMVER_PATTERN: '[0-9]+\.[0-9]+\.[0-9]+'
@@ -62,22 +62,22 @@ jobs:
           date=$(date +"%Y-%m-%d")
 
           # get line number of uppermost comparison url at bottom of changelog ("[Unreleased]: https://github.com/.../version...HEAD")
-          latest_comparison_url_line_number=$(cat -n ${{ env.CHANGELOG_PATH }} | grep -Eoi "[0-9]+.\[Unreleased\]" | grep -Eo "[0-9]+")
+          latest_comparison_url_line_number=$(cat -n ${{ env.PATH_TO_CHANGELOG }} | grep -Eoi "[0-9]+.\[Unreleased\]" | grep -Eo "[0-9]+")
 
           # previous version can be extracted from line below uppermost comparison
-          previous_irs_version=$(awk "NR==$((latest_comparison_url_line_number+1))" ${{ env.CHANGELOG_PATH }} | grep -Eo "\[${{ env.SEMVER_PATTERN }}\]" | tr -d "[]")
+          previous_irs_version=$(awk "NR==$((latest_comparison_url_line_number+1))" ${{ env.PATH_TO_CHANGELOG }} | grep -Eo "\[${{ env.SEMVER_PATTERN }}\]" | tr -d "[]")
           echo "previous-irs-version=$previous_irs_version" >> "$GITHUB_OUTPUT"
 
           # correct uppermost comparison
-          sed -i "$latest_comparison_url_line_number s|${{ env.SEMVER_PATTERN_SED }}\.\.\.HEAD|${{ inputs.irs-version }}...HEAD|" ${{ env.CHANGELOG_PATH }}         
+          sed -i "$latest_comparison_url_line_number s|${{ env.SEMVER_PATTERN_SED }}\.\.\.HEAD|${{ inputs.irs-version }}...HEAD|" ${{ env.PATH_TO_CHANGELOG }}         
 
           # insert new comparison below uppermost one
           sed -i "$((latest_comparison_url_line_number+1)) s|^|[${{ inputs.irs-version }}]: \
-          https://github.com/eclipse-tractusx/item-relationship-service/compare/$previous_irs_version...${{ inputs.irs-version }}\n|" ${{ env.CHANGELOG_PATH }}        
+          https://github.com/eclipse-tractusx/item-relationship-service/compare/$previous_irs_version...${{ inputs.irs-version }}\n|" ${{ env.PATH_TO_CHANGELOG }}        
 
           # replace placeholder
-          placeholder_line_number=$(cat -n ${{ env.CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
-          sed -i "$((placeholder_line_number+1)) s|^|\n## [${{ inputs.irs-version }}] - $date\n|" ${{ env.CHANGELOG_PATH }}
+          placeholder_line_number=$(cat -n ${{ env.PATH_TO_CHANGELOG }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
+          sed -i "$((placeholder_line_number+1)) s|^|\n## [${{ inputs.irs-version }}] - $date\n|" ${{ env.PATH_TO_CHANGELOG }}
 
       - name: Update Helm changelog
         run: |
@@ -189,8 +189,8 @@ jobs:
           done
         continue-on-error: false
 
-      - name: Create and push new Git tag for release
-        run: git tag ${{ inputs.irs-version }} && git push origin ${{ inputs.irs-version }}
+      - name: Create and push new Git tag for release and pull latest changes
+        run: git tag ${{ inputs.irs-version }} && git push origin ${{ inputs.irs-version }} && git pull
 
       - name: Extract changelog text
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
