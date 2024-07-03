@@ -1,7 +1,7 @@
 name: IRS build
 
 on:
-  workflow_dispatch: # Trigger manually
+  workflow_dispatch:
   workflow_call:
     inputs:
       checkout-tag:
@@ -52,13 +52,13 @@ jobs:
       - name: Determine ref to check out
         id: determine-ref
         run: |
-          echo "${{ github.event_name }}"
           if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
             echo "determined-ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
           else
-            echo "USING INPUT REF ${{ inputs.ref-to-checkout }}"
             echo "determined-ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
           fi
+      - name: Echo output as proof
+        run: echo "${{ steps.determine-ref.determined-ref }}"
 
   build:
     runs-on: ubuntu-latest
@@ -69,9 +69,7 @@ jobs:
         with:
           fetch-tags: 'true'
 
-      - run: |
-          echo "CHECKING OUT REF ${{ needs.determine-ref.outputs.determined-value }}" 
-          git checkout ${{ needs.determine-ref.outputs.determined-value }}
+      - run: git checkout ${{ needs.determine-ref.outputs.determined-value }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
