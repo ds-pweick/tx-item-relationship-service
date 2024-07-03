@@ -65,7 +65,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-tags: 'true'
-        run: git checkout tags/${{ needs.determine-ref.outputs.ref }}
+
+      - run: git checkout tags/${{ needs.determine-ref.outputs.ref }}
 
       - name: Build image
         uses: docker/build-push-action@v6
