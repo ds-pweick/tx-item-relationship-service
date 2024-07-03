@@ -8,6 +8,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## [5.3.5] - 2024-07-03
+
 ## [5.3.4] - 2024-07-03
 
 ## [5.3.3] - 2024-07-03
@@ -738,7 +740,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.4...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.5...HEAD
+[5.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.4...5.3.5
 [5.3.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.3...5.3.4
 [5.3.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.2...5.3.3
 [5.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.3.1...5.3.2
