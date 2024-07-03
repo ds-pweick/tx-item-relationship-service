@@ -137,7 +137,7 @@ jobs:
         id: version
         run: |
           # Strip git ref prefix from version
-          VERSION=$(echo "${{ inputs.ref-to-check-out:-github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          VERSION=$(echo "${{ inputs.ref-to-check-out || github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           # Support PR ref versions
           [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
           # Use Docker `latest` tag convention
