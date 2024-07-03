@@ -7,6 +7,12 @@ on:
   workflow_dispatch: # Trigger manually
   workflow_call:
     inputs:
+      checkout-tag:
+        description: 'Whether to check out a tag'
+        required: false
+        type: boolean
+        default: false
+
       ref-to-checkout:
         description: 'Ref of branch/tag from which to execute workflow'
         required: true
@@ -36,7 +42,7 @@ jobs:
       - name: Determine ref to check out
         id: determine-ref
         run: |
-          if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
+          if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
             echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
           else
             echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
