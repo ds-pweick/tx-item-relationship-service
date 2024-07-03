@@ -178,5 +178,5 @@ jobs:
       - build_images
     uses: ./.github/workflows/trivy-docker-hub-scan.yml
     with:
-      ref-to-checkout: ${{ inputs.ref-to-check-out || github.ref }}
+      ref-to-check-out: ${{ inputs.ref-to-check-out || github.ref }}
 
