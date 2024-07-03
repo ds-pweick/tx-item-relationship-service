@@ -65,6 +65,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-tags: 'true'
           ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Set up JDK 17
