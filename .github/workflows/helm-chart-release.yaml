@@ -3,6 +3,11 @@ name: Release Helm Charts
 on:
   workflow_dispatch: # Trigger manually
   workflow_call:
+    inputs:
+      ref-to-checkout:
+        description: 'Ref of branch/tag from which to execute workflow'
+        required: true
+        type: string
   push:
     branches:
       - main
@@ -18,10 +23,20 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+      - name: Identify triggering event
+        id: trigger-identification
+        run: |
+          if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ steps.trigger-identification.outputs.ref }}
 
       - name: Get helm charts latest tag version
         id: step1

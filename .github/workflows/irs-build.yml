@@ -3,6 +3,11 @@ name: IRS build
 on:
   workflow_dispatch: # Trigger manually
   workflow_call:
+    inputs:
+      ref-to-checkout:
+        description: 'Ref of branch/tag from which to execute workflow'
+        required: true
+        type: string
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -36,8 +41,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Identify triggering event
+        id: trigger-identification
+        run: |
+          if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.trigger-identification.outputs.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
