@@ -46,7 +46,7 @@ jobs:
         with:
           fetch-tags: 'true'
 
-      - run: git checkout tags/${{ needs.determine-ref.outputs.ref }}
+      - run: git checkout ${{ needs.determine-ref.outputs.ref }}
 
       - name: Validate OpenAPI definition
         uses: char0n/swagger-editor-validate@v1
