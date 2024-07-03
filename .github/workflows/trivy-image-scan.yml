@@ -49,6 +49,7 @@ jobs:
           fi
 
   analyze-irs-api:
+    needs: determine-ref
     runs-on: ubuntu-latest
     permissions:
       actions: read

@@ -37,6 +37,7 @@ jobs:
           fi
 
   test_swagger_editor_validator_remote:
+    needs: determine-ref
     runs-on: ubuntu-latest
     name: Swagger Editor Validator Remote
 

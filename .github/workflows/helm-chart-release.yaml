@@ -36,6 +36,7 @@ jobs:
           fi
 
   get-helm-charts-versions-irs:
+    needs: determine-ref
     outputs:
       latest_version: ${{ steps.step1.outputs.latest_version }}
       current_version: ${{ steps.step2.outputs.current_version }}

@@ -61,6 +61,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: determine-ref
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,7 +88,7 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
-    needs: [init]
+    needs: [init, determine-ref]
     # No need to run if we cannot use the sonar token
     if: >-
       needs.init.outputs.sonar_configured == 'true'
@@ -133,7 +134,7 @@ jobs:
           -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
-    needs: [init]
+    needs: [init, determine-ref]
     strategy:
       matrix:
         image:
