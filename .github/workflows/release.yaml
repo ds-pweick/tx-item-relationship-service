@@ -226,7 +226,7 @@ jobs:
     secrets: inherit
     with:
       checkout-tag: true
-      ref-to-checkout: '${{ inputs.irs-version }}'
+      ref-to-checkout: 'refs/tags/${{ inputs.irs-version }}'
 
   trivy-image-scan:
     name: "Scan image in local registry with Trivy"
