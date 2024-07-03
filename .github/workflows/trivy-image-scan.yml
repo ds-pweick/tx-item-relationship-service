@@ -28,6 +28,20 @@ on:
     - cron: '0 0 * * *' # Once a day
 
 jobs:
+  determine-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.determine-ref.ref }}
+    steps:
+      - name: Determine ref to check out
+        id: determine-ref
+        run: |
+          if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
+            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
+          fi
+
   analyze-irs-api:
     runs-on: ubuntu-latest
     permissions:
@@ -41,19 +55,10 @@ jobs:
           - 5000:5000
 
     steps:
-      - name: Identify triggering event
-        id: trigger-identification
-        run: |
-          if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
-            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.trigger-identification.outputs.ref }}
+          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Build image
         uses: docker/build-push-action@v6

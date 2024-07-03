@@ -16,13 +16,13 @@ on:
       - '**'
 
 jobs:
-  test_swagger_editor_validator_remote:
+  determine-ref:
     runs-on: ubuntu-latest
-    name: Swagger Editor Validator Remote
-
+    outputs:
+      ref: ${{ steps.determine-ref.ref }}
     steps:
-      - name: Identify triggering event
-        id: trigger-identification
+      - name: Determine ref to check out
+        id: determine-ref
         run: |
           if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
             echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
@@ -30,10 +30,15 @@ jobs:
             echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
           fi
 
+  test_swagger_editor_validator_remote:
+    runs-on: ubuntu-latest
+    name: Swagger Editor Validator Remote
+
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.trigger-identification.outputs.ref }}
+          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Validate OpenAPI definition
         uses: char0n/swagger-editor-validate@v1
