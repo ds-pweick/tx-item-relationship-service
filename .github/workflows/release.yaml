@@ -215,7 +215,7 @@ jobs:
       - release
     uses: ./.github/workflows/helm-chart-release.yaml
     with:
-      checkout-tag: 'true'
+      checkout-tag: true
       ref-to-checkout: '${{ inputs.irs-version }}'
 
   build-irs:
@@ -225,7 +225,7 @@ jobs:
     uses: ./.github/workflows/irs-build.yml
     secrets: inherit
     with:
-      checkout-tag: 'true'
+      checkout-tag: true
       ref-to-checkout: '${{ inputs.irs-version }}'
 
   trivy-image-scan:
@@ -235,7 +235,7 @@ jobs:
     uses: ./.github/workflows/trivy-image-scan.yml
     secrets: inherit
     with:
-      checkout-tag: 'true'
+      checkout-tag: true
       ref-to-checkout: '${{ inputs.irs-version }}'
 
   validate-openapi-definition:
@@ -245,5 +245,5 @@ jobs:
     uses: ./.github/workflows/swagger-editor-validate.yml
     secrets: inherit
     with:
-      checkout-tag: 'true'
+      checkout-tag: true
       ref-to-checkout: '${{ inputs.irs-version }}'
