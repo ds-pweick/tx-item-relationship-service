@@ -46,6 +46,7 @@ jobs:
       - name: Determine ref to check out
         id: determine-ref
         run: |
+          echo "${{ github.event_name }}"
           if [[ "${{ github.event_name }}" != "workflow_call" ]]; then
             echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
           else
