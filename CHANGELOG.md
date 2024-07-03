@@ -8,6 +8,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## [5.1.5] - 2024-07-03
+
 ### Fixed
 
 - Fixed ESS Investigation job processing not starting #579
@@ -698,7 +700,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.9...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.5...HEAD
+[5.1.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.9...5.1.5
 [5.1.9]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.5...5.1.9
 [5.1.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.4...5.1.5
 [5.1.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.3...5.1.4
