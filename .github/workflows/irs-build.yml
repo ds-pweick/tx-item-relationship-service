@@ -57,8 +57,6 @@ jobs:
           else
             echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
           fi
-      - name: Echo output as proof
-        run: echo "${{ steps.determine-ref.outputs.ref }}"
 
   build:
     runs-on: ubuntu-latest
@@ -89,7 +87,7 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
-    needs: [init]
+    needs: [init, determine-ref]
     # No need to run if we cannot use the sonar token
     if: >-
       needs.init.outputs.sonar_configured == 'true'
@@ -135,7 +133,7 @@ jobs:
           -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
-    needs: [init]
+    needs: [init, determine-ref]
     strategy:
       matrix:
         image:

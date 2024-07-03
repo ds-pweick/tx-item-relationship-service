@@ -37,7 +37,7 @@ jobs:
   determine-ref:
     runs-on: ubuntu-latest
     outputs:
-      ref: ${{ steps.determine-ref.ref }}
+      ref: ${{ steps.determine-ref.outputs.ref }}
     steps:
       - name: Determine ref to check out
         id: determine-ref
@@ -50,6 +50,7 @@ jobs:
 
   analyze-irs-api:
     runs-on: ubuntu-latest
+    needs: determine-ref
     permissions:
       actions: read
       contents: read
