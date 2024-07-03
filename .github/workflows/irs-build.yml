@@ -47,17 +47,17 @@ jobs:
   determine-ref:
     runs-on: ubuntu-latest
     outputs:
-      ref: ${{ steps.determine-ref.ref }}
+      determined-value: ${{ steps.determine-ref.determined-ref }}
     steps:
       - name: Determine ref to check out
         id: determine-ref
         run: |
           echo "${{ github.event_name }}"
           if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
-            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+            echo "determined-ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
           else
             echo "USING INPUT REF ${{ inputs.ref-to-checkout }}"
-            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
+            echo "determined-ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
           fi
 
   build:
@@ -70,8 +70,8 @@ jobs:
           fetch-tags: 'true'
 
       - run: |
-          echo "CHECKING OUT REF ${{ needs.determine-ref.outputs.ref }}" 
-          git checkout ${{ needs.determine-ref.outputs.ref }}
+          echo "CHECKING OUT REF ${{ needs.determine-ref.outputs.determined-value }}" 
+          git checkout ${{ needs.determine-ref.outputs.determined-value }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
