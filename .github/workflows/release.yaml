@@ -119,17 +119,17 @@ jobs:
         run: sed -i "s|${{ steps.main-changelog-update.outputs.previous-irs-version }}|${{ inputs.irs-version }}|" ${{ env.IRS_APPLICATION_PATH }}
 
       - name: Update irs-api.yaml
-        uses: mikefarah/yq@v4.44.2
+        uses: mikefarah/yq@v4.44.3
         with:
           cmd: yq -i eval '.info.version = "${{ inputs.irs-version }}"' ${{ env.OPENAPI_SPEC_PATH }}
 
       - name: Update Chart.yaml appVersion
-        uses: mikefarah/yq@v4.44.2
+        uses: mikefarah/yq@v4.44.3
         with:
           cmd: yq -i eval '.appVersion = "${{ inputs.irs-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
       - name: Update Chart.yaml version
-        uses: mikefarah/yq@v4.44.2
+        uses: mikefarah/yq@v4.44.3
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' ${{ env.HELM_CHART_PATH }}/Chart.yaml
 
